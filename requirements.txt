@@ -28,10 +28,9 @@ jsonpatch==1.33
 jsonpointer==3.0.0
 jsonschema==4.23.0
 jsonschema-specifications==2023.12.1
-# 其他依赖保持不变
 langchain==0.2.14  # 保持不变
 langchain-community==0.2.12  # 保持不变
-langchain-core==0.2.35  # 保持不变
+langchain-core==0.2.34  # 保持不变
 langchain-wenxin==0.10.1  # 尝试降级到与 pydantic 兼容的版本
 langchain-text-splitters==0.2.2
 langsmith==0.1.104
@@ -50,8 +49,11 @@ pandas==2.2.2
 pillow==10.4.0
 protobuf==5.27.3
 pyarrow==17.0.0
-pydantic==1.10.18
-pydantic_core==2.20.1
+# 其他依赖保持不变
+pydantic>=1.10.0,<1.10.15
+# 其他依赖保持不变
+pydantic>=1.10.0,<1.10.15
+pydantic_core>=2.0.0,<2.21.0  # 修改此行
 pydeck==0.9.1
 Pygments==2.18.0
 python-dateutil==2.9.0.post0
