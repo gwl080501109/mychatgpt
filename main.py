@@ -5,9 +5,9 @@ from langchain.memory import ConversationBufferMemory
 st.title("我的chatgpt")
 
 
-with st.sidebar:
-    mobile = st.text_input("请输入你的手机号")
-    st.info("*******************")
+# with st.sidebar:
+#     mobile = st.text_input("请输入你的手机号")
+#     st.info("*******************")
 if "memory" not in st.session_state:
     st.session_state["memory"] = ConversationBufferMemory(return_messages=True)
     st.session_state["messages"] = [{"role":"ai",
@@ -17,9 +17,6 @@ for message in st.session_state["messages"]:
 
 prompt = st.chat_input()
 if prompt:
-    if not mobile:
-        st.info("请输入手机号")
-        st.stop()
     st.session_state["messages"].append({"role":"human", "content":prompt})
     st.chat_message("human").write(prompt)
 
