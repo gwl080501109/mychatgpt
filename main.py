@@ -1,10 +1,6 @@
-
 import streamlit as st
 from langchain.memory import ConversationBufferMemory
 from utils import call_with_stream
-
-# 调用模型，启用流式输出的函数
-
 
 # Streamlit 应用
 st.title("海科chat")
@@ -39,20 +35,21 @@ if prompt:
     # 将用户的提问保存到内存中
     user_memory.chat_memory.add_message({"role": "user", "content": prompt})  # 更新内存
 
-    with st.spinner("生成中,请稍等"):
-        # 调用流式响应，传递历史消息和用户输入
-        response_generator = call_with_stream(prompt, user_memory)
 
-        # 创建一个占位符
-        placeholder = st.empty()
+    # 调用流式响应，传递历史消息和用户输入
+    response_generator = call_with_stream(prompt, user_memory)
 
-        response_text = ""
-        for chunk in response_generator:
-            response_text += chunk
-            # 使用占位符更新内容，而不是重复调用 write()
-            placeholder.markdown(response_text)  # 实时更新消息
+    # 创建一个占位符
+    placeholder = st.empty()
+
+    response_text = ""
+    for chunk in response_generator:
+        response_text += chunk
+        # 使用占位符更新内容，而不是重复调用 write()
+        # Format the response text
+        formatted_text = response_text.replace("\n", "<br>")  # Replace newlines with HTML line breaks
+        placeholder.markdown(formatted_text, unsafe_allow_html=True)  # 实时更新消息
 
     # 将完整的响应添加到会话中
     user_messages.append({"role": "ai", "content": response_text})  # 将AI的响应添加到消息列表
     user_memory.chat_memory.add_message({"role": "ai", "content": response_text})  # 更新内存
-

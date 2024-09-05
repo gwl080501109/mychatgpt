@@ -34,7 +34,7 @@ def get_chat_response_streaming(prompt, memory):
     return response_generator
 
 
-def call_with_stream(prompt, memory):
+def call_with_stream(prompt, memory, complete_response=None):
     # 获取历史消息
     history_messages = memory.chat_memory.messages  # 通过 chat_memory 获取历史消息
     print("history_messages:", history_messages)
@@ -46,10 +46,10 @@ def call_with_stream(prompt, memory):
             formatted_messages.append({'role': 'assistant', 'content': msg['content']})
         else:
             formatted_messages.append({'role': msg['role'], 'content': msg['content']})
-
+    print("formatted_messages=", formatted_messages)
     # 调用模型，启用流式输出
     responses = Generation.call(
-        model='aquilachat-7b',
+        model='qwen-14b-chat',
         api_key='sk-7cb7535b25a54d5a8f3af0066af95fd3',
         temperature=0.1,
         messages=formatted_messages,
@@ -58,10 +58,15 @@ def call_with_stream(prompt, memory):
         incremental_output=True  # 设置增量输出
     )
 
-    # 返回流式响应的生成器
+    response_text = ""
     for response in responses:
         if response.status_code == HTTPStatus.OK:
-            yield response.output.choices[0]['message']['content']
+            choice = response.output.choices[0]
+            print('choice:', choice)
+            content = choice.get('message', {}).get('content', '')
+            if content:  # 仅当 content 不是 None 或空字符串时才进行累积
+                response_text += content
+                yield content
         else:
             print(response)
             yield f"Error: {response.status_code}, {response.message}"
